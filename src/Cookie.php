@@ -402,7 +402,6 @@ final class Cookie implements CookieInterface
         } elseif (!is_numeric($expire)) {
             $stringExpire = $expire;
             $expire = strtotime($expire);
-
             if (false === $expire) {
                 throw new \InvalidArgumentException(sprintf(
                     'The string representation of the cookie expire time `%s` is not valid.',

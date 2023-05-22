@@ -66,32 +66,29 @@ final class Factory
     public function createFromString(string $string)
     {
         if (!$attributes = preg_split('/\s*;\s*/', $string, -1, \PREG_SPLIT_NO_EMPTY)) {
-            throw new \InvalidArgumentException(sprintf(
-                'The raw value of the `Set Cookie` header `%s` could not be parsed.',
-                $string
-            ));
+            throw new \InvalidArgumentException(sprintf('The raw value of the `Set Cookie` header `%s` could not be parsed.', $string));
         }
 
-        $nameAndValue = explode('=', array_shift($attributes), 2);
-        $cookie = ['name' => $nameAndValue[0], 'value' => isset($nameAndValue[1]) ? urldecode($nameAndValue[1]) : ''];
+        $composed = explode('=', array_shift($attributes), 2);
+        $cookie = ['name' => $composed[0], 'value' => isset($composed[1]) ? urldecode($composed[1]) : ''];
 
         while ($attribute = array_shift($attributes)) {
             $attribute = explode('=', $attribute, 2);
-            $attributeName = strtolower($attribute[0]);
-            $attributeValue = $attribute[1] ?? null;
+            $name = strtolower($attribute[0]);
+            $value = $attribute[1] ?? null;
 
-            if (\in_array($attributeName, ['expires', 'domain', 'path', 'samesite'], true)) {
-                $cookie[$attributeName] = $attributeValue;
+            if (\in_array($name, ['expires', 'domain', 'path', 'samesite'], true)) {
+                $cookie[$name] = $value;
                 continue;
             }
 
-            if (\in_array($attributeName, ['secure', 'httponly'], true)) {
-                $cookie[$attributeName] = true;
+            if (\in_array($name, ['secure', 'httponly'], true)) {
+                $cookie[$name] = true;
                 continue;
             }
 
-            if ('max-age' === $attributeName) {
-                $cookie['expires'] = time() + (int) $attributeValue;
+            if ('max-age' === $name) {
+                $cookie['expires'] = time() + (int) $value;
             }
         }
 
