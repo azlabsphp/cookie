@@ -107,19 +107,19 @@ final class Cookie implements CookieInterface
      */
     public function __toString(): string
     {
-        $cookie = $this->name.'='.rawurlencode($this->value);
+        $cookie = $this->name . '=' . rawurlencode($this->value);
 
         if (!$this->isSession()) {
-            $cookie .= '; Expires='.gmdate('D, d-M-Y H:i:s T', $this->expires);
-            $cookie .= '; Max-Age='.$this->getMaxAge();
+            $cookie .= '; Expires=' . gmdate('D, d-M-Y H:i:s T', $this->expires);
+            $cookie .= '; Max-Age=' . $this->getMaxAge();
         }
 
         if (null !== $this->domain) {
-            $cookie .= '; Domain='.$this->domain;
+            $cookie .= '; Domain=' . $this->domain;
         }
 
         if (null !== $this->path) {
-            $cookie .= '; Path='.$this->path;
+            $cookie .= '; Path=' . $this->path;
         }
 
         if (true === $this->secure) {
@@ -131,7 +131,7 @@ final class Cookie implements CookieInterface
         }
 
         if (null !== $this->sameSite) {
-            $cookie .= '; SameSite='.$this->sameSite;
+            $cookie .= '; SameSite=' . $this->sameSite;
         }
 
         return $cookie;
@@ -363,7 +363,7 @@ final class Cookie implements CookieInterface
         if (!preg_match('/^[a-zA-Z0-9!#$%&\' *+\-.^_`|~]+$/', $name)) {
             throw new \InvalidArgumentException(sprintf(
                 'The cookie name `%s` contains invalid characters; must contain any US-ASCII'
-                .' characters, except control and separator characters, spaces, or tabs.',
+                    . ' characters, except control and separator characters, spaces, or tabs.',
                 $name
             ));
         }
@@ -386,7 +386,7 @@ final class Cookie implements CookieInterface
         if (null !== $expire && !\is_int($expire) && !\is_string($expire) && !$expire instanceof \DateTimeInterface) {
             throw new \InvalidArgumentException(sprintf(
                 'The cookie expire time is not valid; must be null, or string,'
-                .' or integer, or DateTimeInterface instance; received `%s`.',
+                    . ' or integer, or DateTimeInterface instance; received `%s`.',
                 (\is_object($expire) ? \get_class($expire) : \gettype($expire))
             ));
         }
@@ -441,11 +441,7 @@ final class Cookie implements CookieInterface
         $sameSiteValues = [self::SAME_SITE_NONE, self::SAME_SITE_LAX, self::SAME_SITE_STRICT];
 
         if (null !== $sameSite && !\in_array($sameSite, $sameSiteValues, true)) {
-            throw new \InvalidArgumentException(sprintf(
-                'The sameSite attribute `%s` is not valid; must be one of (%s).',
-                $sameSite,
-                implode(', ', array_map(static fn ($item) => "\"{$item}\"", $sameSiteValues))
-            ));
+            throw new \InvalidArgumentException(sprintf('The sameSite attribute `%s` is not valid; must be one of (%s).', $sameSite, implode(', ', array_map(static fn ($item) => "\"{$item}\"", $sameSiteValues))));
         }
 
         $this->sameSite = $sameSite;
